@@ -1,5 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { GitHubServerResponse, GitHubUser } from '../../types/github'
+
+import { GitHubRepo } from '../../types/repos'
+import { GitHubServerResponse, GitHubUser } from '../../types/users'
 
 export const gitHubApi = createApi({
   reducerPath: 'github/api',
@@ -18,7 +20,7 @@ export const gitHubApi = createApi({
       }),
       transformResponse: (response: GitHubServerResponse<GitHubUser>) => response.items,
     }),
-    getUserRepos: build.query<any, string>({
+    getUserRepos: build.query<GitHubRepo[], string>({
       query: (username: string) => ({
         url: `users/${username}/repos`,
       }),

@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from 'react'
 
 import { useDebounce } from '../hooks/useDebounce'
 import { useSearchUsersQuery, useLazyGetUserReposQuery } from '../store/github/github.api'
-import { GitHubUser } from '../types/github'
+import { GitHubUser } from '../types/users'
 
 export function Home() {
   const [search, setSearch] = useState<string>('')
