@@ -2,17 +2,24 @@ import { ChangeEvent, useEffect, useState } from 'react'
 
 import { useDebounce } from '../hooks/useDebounce'
 import { useSearchUsersQuery } from '../store/github/github.api'
+import { GitHubUser } from '../types/github'
 
 export function Home() {
   const [search, setSearch] = useState<string>('')
+  const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false)
   const debounced = useDebounce(search)
-  const { isError, data } = useSearchUsersQuery(debounced, {
+  const {
+    data: users,
+    isError,
+    isLoading,
+  } = useSearchUsersQuery(debounced, {
     skip: debounced.length < 3,
+    refetchOnFocus: true,
   })
 
   useEffect(() => {
-    console.log(debounced)
-  }, [debounced])
+    setIsDropDownOpen(debounced.length > 3 && !!users?.length)
+  }, [debounced, users])
 
   function handleSearchChange(event: ChangeEvent<HTMLInputElement>): void {
     setSearch(event.target.value)
@@ -31,11 +38,20 @@ export function Home() {
           onChange={handleSearchChange}
         />
 
-        <div className="absolute top-[42px] left-0 right-0 max-h-[200px] shadow-md bg-white">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia quae libero quis odio iste quas ipsa
-          consectetur dignissimos excepturi porro doloremque sequi sint error sapiente, rem sed adipisci facilis
-          assumenda.
-        </div>
+        {isLoading && <p className="text-center">Loading...</p>}
+
+        {isDropDownOpen && (
+          <ul className="absolute top-[42px] left-0 right-0 max-h-[200px] shadow-md bg-white list-none overflow-y-scroll">
+            {users?.map((user: GitHubUser) => (
+              <li
+                key={user.id}
+                className="px-4 py-2 hover:bg-gray-500 hover:text-white transition-colors cursor-pointer"
+              >
+                {user.login}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   )
