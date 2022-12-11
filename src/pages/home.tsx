@@ -1,8 +1,14 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, lazy, useEffect, useState } from 'react'
 
 import { useDebounce } from '../hooks/useDebounce'
 import { useSearchUsersQuery, useLazyGetUserReposQuery } from '../store/github/github.api'
 import { GitHubUser } from '../types/users'
+
+const RepoCard = lazy(() =>
+  import('../components/repoCard').then((module) => {
+    return { default: module.RepoCard }
+  })
+)
 
 export function Home() {
   const [search, setSearch] = useState<string>('')
@@ -60,7 +66,13 @@ export function Home() {
           </ul>
         )}
 
-        <div className="text-center">{areReposLoading && <p className="text-center">Repos are loading...</p>}</div>
+        <div className="text-center">
+          {areReposLoading && <p className="text-center">Repos are loading...</p>}
+
+          {repos?.map((repo) => (
+            <RepoCard repo={repo} key={repo.id} />
+          ))}
+        </div>
       </div>
     </div>
   )
