@@ -1,12 +1,26 @@
+import { useState } from 'react'
+
 import { useActions } from '../hooks/useActions'
+import { useAppSelector } from '../hooks/useRedux'
 import { GitHubRepo } from '../types/repos'
 
 export function RepoCard({ repo }: { repo: GitHubRepo }) {
-  const { addBookmark } = useActions()
+  const { addBookmark, removeBookmark } = useActions()
+  const { bookmarks } = useAppSelector((state) => state.gitHub)
+  const [isBookmark, setIsBookmark] = useState(bookmarks.includes(repo.html_url))
 
   const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+
     addBookmark(repo.html_url)
+    setIsBookmark(true)
+  }
+
+  const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+
+    removeBookmark(repo.html_url)
+    setIsBookmark(false)
   }
 
   if (!repo) return null
@@ -23,13 +37,23 @@ export function RepoCard({ repo }: { repo: GitHubRepo }) {
 
         {repo.description && <p className="text-small font-thin">{repo.description}</p>}
 
-        <button
-          type="button"
-          className="px-4 py-2 bg-yellow-400 rounded hover:shadow-md transition-all"
-          onClick={handleAddClick}
-        >
-          Add
-        </button>
+        {isBookmark ? (
+          <button
+            type="button"
+            className="px-4 py-2 bg-orange-400 rounded hover:shadow-md transition-all"
+            onClick={handleRemoveClick}
+          >
+            Remove from Bookmarks
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="px-4 py-2 bg-blue-400 rounded hover:shadow-md transition-all"
+            onClick={handleAddClick}
+          >
+            Add to Bookmarks
+          </button>
+        )}
       </a>
     </div>
   )

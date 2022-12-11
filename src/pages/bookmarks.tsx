@@ -3,10 +3,10 @@ import { useAppSelector } from '../hooks/useRedux'
 export function Bookmarks() {
   const { bookmarks } = useAppSelector((state) => state.gitHub)
 
-  if (!bookmarks?.length) return <p className="text-center">No bookmarks</p>
+  if (!bookmarks?.length) return <p className="text-center mt-10">No bookmarks</p>
 
   return (
-    <div className="flex justify-center pt-10 mx-auto h-screen w-screen">
+    <div className="flex justify-center pt-10 mx-auto w-screen">
       <ul className="list-none">
         {bookmarks.map((bookmark) => (
           <li key={bookmark} className='mb-2'>
