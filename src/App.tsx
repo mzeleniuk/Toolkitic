@@ -1,18 +1,31 @@
+import { lazy, Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 
+import { Loader } from './components/loader'
 import { Navigation } from './components/navigation'
-import { Bookmarks } from './pages/bookmarks'
-import { Home } from './pages/home'
+
+const Bookmarks = lazy(() =>
+  import('./pages/bookmarks').then((module) => {
+    return { default: module.Bookmarks }
+  })
+)
+const Home = lazy(() =>
+  import('./pages/home').then((module) => {
+    return { default: module.Home }
+  })
+)
 
 function App() {
   return (
     <>
       <Navigation />
 
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/bookmarks" element={<Bookmarks />} />
-      </Routes>
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/bookmarks" element={<Bookmarks />} />
+        </Routes>
+      </Suspense>
     </>
   )
 }
