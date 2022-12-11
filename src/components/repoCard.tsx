@@ -1,6 +1,14 @@
+import { useActions } from '../hooks/useActions'
 import { GitHubRepo } from '../types/repos'
 
 export function RepoCard({ repo }: { repo: GitHubRepo }) {
+  const { addBookmark } = useActions()
+
+  const handleAddClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    addBookmark(repo.html_url)
+  }
+
   if (!repo) return null
 
   return (
@@ -14,6 +22,14 @@ export function RepoCard({ repo }: { repo: GitHubRepo }) {
         </p>
 
         {repo.description && <p className="text-small font-thin">{repo.description}</p>}
+
+        <button
+          type="button"
+          className="px-4 py-2 bg-yellow-400 rounded hover:shadow-md transition-all"
+          onClick={handleAddClick}
+        >
+          Add
+        </button>
       </a>
     </div>
   )
